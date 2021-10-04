@@ -1,0 +1,50 @@
+
+input {
+    border-radius: 10px;
+    border: none;
+    font-size: 20px;
+    padding: 5px;
+    width:200px;
+}
+
+.input-bounds {
+    border-radius: 5px;
+    font-size: 15px;
+    width: 50px;
+}
+
+label {
+    margin: 15px;
+    font-size: 25px;
+}
+
+.input-container {
+    position: relative;
+    border-radius: 10px;
+    background-color: rgb(52, 88, 109);
+    width: 400px;
+    height: 400px;
+    margin:5px;
+}
+
+.input-draggable {
+    border-radius: 100px;
+    background-color: dodgerblue;
+    width: 20px;
+    height: 20px;
+}
+
+.flex-row {
+    display: flex;
+    align-items: center;
+}
+
+.function {
+    padding: 10px;
+}
+
+.position-label {
+    position:absolute;
+    font-size: 10px;
+    transform: translate(15px, 15px);
+}
