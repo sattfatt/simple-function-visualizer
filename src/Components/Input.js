@@ -1,3 +1,4 @@
+import { isNumeric } from "mathjs";
 import { useEffect, useRef, useState } from "react";
 import Draggable from "react-draggable"
 import "../Styles/Input.css"
@@ -36,19 +37,30 @@ function Input(props) {
 
     const evaluate = (point) => {
         let x = 0;
+        let y = 0;
         let dfx = 0;
         let dfy = 0;
+        const eps = 0.001;
         try {
             x = parser.evaluate(`f(${point.x},${point.y})`);
-            const f = math.parse(func);
-            dfx = math.derivative(f, 'x').evaluate({x:point.x});
-            //dfy = math.derivative(func, 'y').evaluate({y:point.y});
+            
+            dfx = parser.evaluate(`f(${point.x},${point.y})`) - parser.evaluate(`f(${point.x + eps},${point.y})`);
+            dfx /= -eps;
+            dfy = parser.evaluate(`f(${point.x},${point.y})`) - parser.evaluate(`f(${point.x},${point.y + eps})`);
+            dfy /= -eps;
+
+            const mag = math.sqrt(dfx*dfx + dfy*dfy);
+            dfx /= mag;
+            dfy /= mag;
             
         } catch (error) {
             console.log(error)
         }
-
-        return { x: 0, y: x, dfx:dfx, dfy:dfy};
+        if (!isNumeric(x) || isNaN(x)) {
+            x = 0;
+            y = 10;
+        }
+        return { x: y, y: x, dfx:dfx, dfy:dfy};
     }
 
     const onInput = (e) => {
