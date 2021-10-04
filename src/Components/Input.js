@@ -14,11 +14,11 @@ function Input(props) {
     const [parser, setParser] = useState(math.parser());
     const [position, setPosition] = useState({ x: 0, y: 0 })
     const [func, setFunction] = useState("x");
+    const [grad, setGrad] = useState({gx:0, gy:0});
 
     const onDrag = (e, data) => {
         setPosition(getPos(data));
         const output = evaluate(getPos(data));
-        console.log(output)
         trigger('input:evaluate', output);
     }
 
@@ -38,21 +38,21 @@ function Input(props) {
     const evaluate = (point) => {
         let x = 0;
         let y = 0;
-        let dfx = 0;
-        let dfy = 0;
+        let gx = 0;
+        let gy = 0;
         const eps = 0.001;
         try {
             x = parser.evaluate(`f(${point.x},${point.y})`);
-            
-            dfx = parser.evaluate(`f(${point.x},${point.y})`) - parser.evaluate(`f(${point.x + eps},${point.y})`);
-            dfx /= -eps;
-            dfy = parser.evaluate(`f(${point.x},${point.y})`) - parser.evaluate(`f(${point.x},${point.y + eps})`);
-            dfy /= -eps;
 
-            const mag = math.sqrt(dfx*dfx + dfy*dfy);
-            dfx /= mag;
-            dfy /= mag;
-            
+            gx = parser.evaluate(`f(${point.x},${point.y})`) - parser.evaluate(`f(${point.x + eps},${point.y})`);
+            gx /= -eps;
+            gy = parser.evaluate(`f(${point.x},${point.y})`) - parser.evaluate(`f(${point.x},${point.y + eps})`);
+            gy /= -eps;
+
+            const mag = math.sqrt(gx * gx + gy * gy);
+            gx /= mag;
+            gy /= mag;
+
         } catch (error) {
             console.log(error)
         }
@@ -60,7 +60,9 @@ function Input(props) {
             x = 0;
             y = 10;
         }
-        return { x: y, y: x, dfx:dfx, dfy:dfy};
+        setGrad({gx:gx, gy:gy});
+        console.log(grad);
+        return { x: y, y: x, dfx: gx, dfy: gy };
     }
 
     const onInput = (e) => {
@@ -97,6 +99,9 @@ function Input(props) {
                         <Draggable bounds="parent" onDrag={onDrag}>
                             <div ref={inputRef} className="input-draggable">
                                 <div className="position-label">({position.x.toFixed(2)}, {position.y.toFixed(2)})</div>
+                                <svg style={{position:"absolute", transform:"translate(-50px,-40px)"}} height="200px" width="100px">
+                                    <line x1="50" y1="50" x2={50 + grad.gx*50} y2={50 + -grad.gy*50} style={{stroke:"rgb(255,0,0)",strokeWidth:2}} />
+                                </svg>
                             </div>
                         </Draggable>
                     </div>
