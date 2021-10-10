@@ -5,6 +5,7 @@
     width: 100px;
     height: 700px;
     margin:5px;
+    overflow:hidden;
 }
 
 .output-draggable {

@@ -4,6 +4,7 @@ import "../Styles/Output.css"
 import { off, on } from "../Utils/Events"
 import { useRef } from "react"
 import mapRange from "../Utils/mapRange";
+import math, { abs, exp, pow } from "mathjs";
 
 function Output(props) {
 
@@ -12,6 +13,28 @@ function Output(props) {
     const [range, setRange] = useState({ xmin: -1.0, xmax: 1.0, ymin: -1.0, ymax: 1.0 });
     const [pixelPos, setPixelPos] = useState({ x: 10, y: 10 });
     const [position, setPostion] = useState({ x: 0, y: 0 });
+
+    const inRange = (position) => {
+        if(position.x < range.xmin || position.x > range.xmax || position.y < range.ymin || position.y > range.ymax) {
+            return false;
+        }
+        return true;
+    }
+
+    const fadeFactor = (position, power) => {
+
+        let opacity = 1;
+        if (!inRange(position)) {
+            if(position.y > range.ymax) {
+                opacity = pow(power, range.ymax - position.y).toFixed(2);
+            }
+            else if(position.y < range.ymax) {
+                opacity = pow(power, position.y - range.ymin).toFixed(2);
+            }
+        }
+
+        return opacity;
+    }
 
     const convert = (data) => {
         const cw = containerRef.current.getBoundingClientRect().width;

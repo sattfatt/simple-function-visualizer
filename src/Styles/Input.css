@@ -25,6 +25,19 @@ label {
     width: 400px;
     height: 400px;
     margin:5px;
+    overflow: hidden;
+}
+
+.canvas {
+    position: absolute;
+    top:0%;
+    left:0%;
+    width: 400px;
+    height: 400px;
+    background-color: chartreuse;
+    image-rendering:optimizeSpeed;
+    z-index: 0;
+    margin: 0;
 }
 
 .input-draggable {
